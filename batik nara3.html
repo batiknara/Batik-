@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nara Batik Store</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9f5f1;
+    color: #5a3e2b;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  ul {
+    list-style: none;
+  }
+
+  /* Navbar */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 70px;
+    background: #fff8f0;
+    box-shadow: 0 2px 8px rgba(90, 62, 43, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+  }
+  .logo {
+    flex: 0 0 auto;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+  .logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  nav {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    align-items: center;
+  }
+  nav a, nav button {
+    font-weight: 600;
+    color: #5a3e2b;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  nav a:hover, nav button:hover {
+    background-color: #d9b38c;
+  }
+  .cart-btn {
+    position: relative;
+    font-size: 22px;
+  }
+  .cart-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: #b87a4a;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+  }
+
+  /* Main Container */
+  main {
+    padding-top: 90px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  /* Welcome Section */
+  #welcome {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  #welcome h1 {
+    font-size: 2.8rem;
+    margin-bottom: 8px;
+    color: #7f5539;
+  }
+  #welcome p {
+    font-size: 1.25rem;
+    color: #a07b5a;
+  }
+  #welcome .promo {
+    margin-top: 15px;
+    font-weight: 700;
+    color: #b87a4a;
+    font-size: 1.1rem;
+  }
+
+  /* Produk Section */
+  #produk {
+    margin-bottom: 60px;
+  }
+  #produk h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #7f5539;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+    gap: 25px;
+  }
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(90, 62, 43, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    box-shadow: 0 6px 15px rgba(90, 62, 43, 0.2);
+  }
+  .product-img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+  }
+  .product-info {
+    padding: 15px 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+    color: #6e4d2b;
+  }
+  .product-info p.price {
+    font-weight: 700;
+    color: #b87a4a;
+    margin-bottom: 12px;
+    font-size: 1.15rem;
+  }
+  .product-info button {
+    margin-top: auto;
+    background-color: #b87a4a;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .product-info button:hover {
+    background-color: #7f5539;
+  }
+
+  /* Keranjang */
+  #cart-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 320px;
+    max-height: 80vh;
+    background: #fff8f0;
+    border: 1px solid #b87a4a;
+    border-radius: 10px;
+    box-shadow: 0 5px 18px rgba(90, 62, 43, 0.3);
+    overflow-y: auto;
+    padding: 15px;
+    display: none;
+    flex-direction: column;
+    z-index: 1500;
+  }
+  #cart-container h3 {
+    font-weight: 700;
+    color: #7f5539;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  #cart-items {
+    flex-grow: 1;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #d9b38c;
+    padding-bottom: 8px;
+  }
+  .cart-item span {
+    flex: 1 1 auto;
+    font-size: 14px;
+    color: #5a3e2b;
+  }
+  .cart-item .qty {
+    margin-left: 8px;
+    font-weight: 700;
+    color: #7f5539;
+  }
+  .remove-btn {
+    background: transparent;
+    border: none;
+    color: #b87a4a;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  #cart-total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #7f5539;
+    margin-bottom: 10px;
+    text-align: right;
+  }
+  #checkout-btn {
+    background-color: #7f5539;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #checkout-btn:hover {
+    background-color: #5a3e2b;
+  }
+
+  /* Login Modal */
+  #login-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(90, 62, 43, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  #login-modal.active {
+    display: flex;
+  }
+  #login-content {
+    background: #fff8f0;
+    padding: 30px 35px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 8px 20px rgba(90, 62, 43, 0.25);
+    text-align: center;
+  }
+  #login-content h2 {
+    color: #7f5539;
+    margin-bottom: 25px;
+  }
+  #login-content input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    border: 1.5px solid #b87a4a;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #5a3e2b;
+  }
+  #login-content button {
+    width: 100%;
+    background-color: #b87a4a;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 12px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #login-content button:hover {
+    background-color: #7f5539;
+  }
+  #close-login {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    color: #b87a4a;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Kontak Section */
+  #kontak {
+    max-width: 600px;
+    margin: 0 auto 60px auto;
+    padding: 20px;
+    background: #fff8f0;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(90, 62, 43, 0.15);
+  }
+  #kontak h2 {
+    color: #7f5539;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  #kontak form label {
+    display: block;
+    margin-bottom: 6px;
+    color: #5a3e2b;
+    font-weight: 600;
+  }
+  #kontak form input, #kontak form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    border: 1.5px solid #b87a4a;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #5a3e2b;
+    resize: vertical;
+  }
+  #kontak form button {
+    background-color: #b87a4a;
+    border: none;
+    color: white;
+    padding: 12px 0;
+    width: 100%;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #kontak form button:hover {
+    background-color: #7f5539;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    header {
+      flex-wrap: wrap;
+      height: auto;
+      padding: 10px 15px;
+    }
+    .logo {
+      margin: 0 auto 10px auto;
+    }
+    nav {
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    #cart-container {
+      width: 90vw;
+      right: 5vw;
+      top: 90px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="logo batik1.jpg" alt="Logo Nara Batik" />
+  </div>
+  <nav>
+    <a href="#welcome">Home</a>
+    <a href="#produk">Produk</a>
+    <a href="#kontak">Kontak</a>
+    <a href="#tentang">Tentang Kami</a>
+    <button id="login-btn">Login</button>
+    <button class="cart-btn" id="cart-btn" title="Keranjang Belanja">🛒<span class="cart-count" id="cart-count">0</span></button>
+  </nav>
+</header>
+
+<main>
+  <section id="welcome">
+    <h1>Selamat Datang di Nara Batik Store</h1>
+    <p>Temukan koleksi batik terbaik khas Nusantara dengan kualitas premium.</p>
+    <p class="promo">🎁 Free Paper Bag Nara Batik Store setiap pembelian batik!</p>
+  </section>
+
+  <section id="produk">
+    <h2>Produk Batik Kami</h2>
+    <div class="products-grid">
+      <div class="product-card" data-id="1">
+        <img class="product-img" src="batik tulis.jpg" alt="Batik Tulis" />
+        <div class="product-info">
+          <h3>Batik Tulis</h3>
+          <p class="price">Rp150.000</p>
+          <button class="add-to-cart">Tambah ke Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card" data-id="2">
+        <img class="product-img" src="batik kombinasi.jpg" alt="Batik Kombinasi" />
+        <div class="product-info">
+          <h3>Batik Kombinasi</h3>
+          <p class="price">Rp100.000</p>
+          <button class="add-to-cart">Tambah ke Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card" data-id="3">
+        <img class="product-img" src="batik modern.jpg" alt="Batik Modern" />
+        <div class="product-info">
+          <h3>Batik Modern</h3>
+          <p class="price">Rp200.000</p>
+          <button class="add-to-cart">Tambah ke Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card" data-id="4">
+        <img class="product-img" src="batik printing.jpg" alt="Batik Printing" />
+        <div class="product-info">
+          <h3>Batik Printing</h3>
+          <p class="price">Rp180.000</p>
+          <button class="add-to-cart">Tambah ke Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card" data-id="5">
+        <img class="product-img" src="batik pekalongan2.jpg" alt="Batik Pekalongan" />
+        <div class="product-info">
+          <h3>Batik Pekalongan</h3>
+          <p class="price">Rp190.000</p>
+          <button class="add-to-cart">Tambah ke Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card" data-id="6">
+        <img class="product-img" src="batik kraton.jpg" alt="Batik Kraton" />
+        <div class="product-info">
+          <h3>Batik Kraton</h3>
+          <p class="price">Rp160.000</p>
+          <button class="add-to-cart">Tambah ke Keranjang</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kontak">
+    <h2>Kontak Kami</h2>
+    <form id="contact-form">
+      <label for="name">Nama</label>
+      <input type="text" id="name" placeholder="Nama lengkap" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Email Anda" required />
+
+      <label for="message">Pesan</label>
+      <textarea id="message" rows="4" placeholder="Tulis pesan Anda..." required></textarea>
+
+      <button type="submit">Kirim Pesan</button>
+    </form>
+  </section>
+
+  <section id="tentang" style="max-width: 800px; margin: 0 auto 60px; color:#5a3e2b;">
+    <h2 style="text-align:center; margin-bottom: 20px; color:#7f5539;">Tentang Kami</h2>
+    <p style="font-size: 1.1rem; line-height: 1.6;">
+      Nara Batik Store berdiri untuk melestarikan keindahan batik khas Indonesia dengan kualitas terbaik.  
+      Kami menyediakan beragam motif batik asli dengan bahan premium, cocok untuk acara formal maupun santai.  
+      Setiap pembelian batik mendapatkan free paper bag eksklusif dari Nara Batik Store sebagai bentuk apresiasi kami kepada pelanggan.  
+      Kami percaya batik bukan hanya kain, tetapi juga seni dan budaya yang harus diwariskan.
+    </p>
+  </section>
+</main>
+
+<!-- Keranjang -->
+<div id="cart-container">
+  <h3>Keranjang Belanja</h3>
+  <div id="cart-items"></div>
+  <div id="cart-total">Total: Rp0</div>
+  <button id="checkout-btn">Checkout</button>
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal">
+  <div id="login-content">
+    <span id="close-login">&times;</span>
+    <h2>Login Nara Batik</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="login-submit">Masuk</button>
+  </div>
+</div>
+
+<script>
+  // Data Produk
+  const products = [
+    {id: 1, name: "Batik Tulis", price: 150000, img: "https://i.postimg.cc/2SxrdbZs/batik1.jpg"},
+    {id: 2, name: "Batik Kombinasi", price: 100000, img: "https://i.postimg.cc/3NrqhmTx/batik2.jpg"},
+    {id: 3, name: "Batik Modern", price: 200000, img: "https://i.postimg.cc/kMVZY9B7/batik3.jpg"},
+    {id: 4, name: "Batik Printing", price: 180000, img: "https://i.postimg.cc/25Zc3z4L/batik4.jpg"},
+    {id: 5, name: "Batik Pekalongan", price: 190000, img: "https://i.postimg.cc/ZnDcyv0S/batik5.jpg"},
+    {id: 6, name: "Batik Kraton", price: 160000, img: "https://i.postimg.cc/44HP7DnM/batik6.jpg"},
+  ];
+
+  // Keranjang
+  const cartBtn = document.getElementById('cart-btn');
+  const cartContainer = document.getElementById('cart-container');
+  const cartCount = document.getElementById('cart-count');
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartTotal = document.getElementById('cart-total');
+  const checkoutBtn = document.getElementById('checkout-btn');
+  const loginBtn = document.getElementById('login-btn');
+  const loginModal = document.getElementById('login-modal');
+  const closeLoginBtn = document.getElementById('close-login');
+  const loginSubmit = document.getElementById('login-submit');
+
+  let cartItems = {};
+
+  // Tampilkan / sembunyikan keranjang
+  cartBtn.addEventListener('click', () => {
+    cartContainer.style.display = cartContainer.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Tambah ke keranjang
+  document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const productCard = e.target.closest('.product-card');
+      const productId = productCard.getAttribute('data-id');
+      addToCart(productId);
+    });
+  });
+
+  function addToCart(id) {
+    if(cartItems[id]) {
+      cartItems[id].quantity += 1;
+    } else {
+      const product = products.find(p => p.id == id);
+      cartItems[id] = {...product, quantity: 1};
+    }
+    updateCart();
+  }
+
+  function updateCart() {
+    cartItemsContainer.innerHTML = '';
+    let total = 0;
+    let totalCount = 0;
+    for(let key in cartItems) {
+      const item = cartItems[key];
+      total += item.price * item.quantity;
+      totalCount += item.quantity;
+      const itemDiv = document.createElement('div');
+      itemDiv.classList.add('cart-item');
+      itemDiv.innerHTML = `
+        <span>${item.name} x${item.quantity}</span> <span>Rp${(item.price * item.quantity).toLocaleString()}</span>
+      `;
+      cartItemsContainer.appendChild(itemDiv);
+    }
+    cartTotal.textContent = `Total: Rp${total.toLocaleString()}`;
+    cartCount.textContent = totalCount;
+  }
+
+  // Checkout
+  checkoutBtn.addEventListener('click', () => {
+    if(Object.keys(cartItems).length === 0) {
+      alert('Keranjang Anda kosong!');
+      return;
+    }
+    alert('Terima kasih telah berbelanja di Nara Batik Store!');
+    cartItems = {};
+    updateCart();
+    cartContainer.style.display = 'none';
+  });
+
+  // Login modal
+  loginBtn.addEventListener('click', () => {
+    loginModal.style.display = 'block';
+  });
+
+  closeLoginBtn.addEventListener('click', () => {
+    loginModal.style.display = 'none';
+  });
+
+  window.addEventListener('click', (e) => {
+    if(e.target == loginModal) {
+      loginModal.style.display = 'none';
+    }
+  });
+
+  loginSubmit.addEventListener('click', () => {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    if(username && password) {
+      alert(`Selamat datang, ${username}!`);
+      loginModal.style.display = 'none';
+    } else {
+      alert('Mohon isi username dan password!');
+    }
+  });
+
+  // Form kontak
+  const contactForm = document.getElementById('contact-form');
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Pesan Anda telah terkirim!');
+    contactForm.reset();
+  });
+</script>
+
+</body>
+</html>
